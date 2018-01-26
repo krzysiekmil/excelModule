@@ -1,5 +1,6 @@
 package exelmodule.controller;
 
+import com.sun.javaws.exceptions.ErrorCodeResponseException;
 import exelmodule.model.ExelFile;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
@@ -24,19 +25,27 @@ public class Controller {
     Job job;
 
 
-    @PostMapping("/read")
+    @PostMapping("file/write")
+    public void write(@RequestBody ExelFile exelFile){
+
+    }
+
+
+    @PostMapping("file/read")
     public void read(@RequestBody ExelFile exelFile) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        if (!exelFile.sourcePath.isEmpty()||!exelFile.sheet.isEmpty()||exelFile.row!=null||exelFile.cell_in_row!=null) {
+        if (!exelFile.sourcePath.isEmpty()&&!exelFile.sheet.isEmpty()&&exelFile.row!=null&&exelFile.cell_in_row!=null) {
             JobParameters jobParameters = new JobParametersBuilder()
                     .addString("test", exelFile.sourcePath)
                     .addString("sheet", exelFile.sheet)
                     .addLong("row", exelFile.row)
                     .addLong("cell_in_row", exelFile.cell_in_row)
+                    .addLong("row_max",exelFile.row_max)
+                    .addLong("cell_in_row_max",exelFile.cell_in_row_max)
                     .addLong("time", System.nanoTime())
                     .toJobParameters();
             jobLauncher.run(job, jobParameters);
         }
         else
-            throw new JobParametersInvalidException("brakuje parametrow");
+            throw new JobParametersInvalidException("Missing parameters");
     }
 }

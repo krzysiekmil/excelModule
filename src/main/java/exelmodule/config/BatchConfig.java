@@ -1,9 +1,13 @@
 package exelmodule.config;
 
-import exelmodule.model.ExelDto;
+import exelmodule.model.ExelReadDto;
+import exelmodule.model.ExelWriteDto;
 import exelmodule.readExelStep.Processor;
 import exelmodule.readExelStep.Reader;
 import exelmodule.readExelStep.Writer;
+import exelmodule.writeExelStep.Processor_write;
+import exelmodule.writeExelStep.Reader_write;
+import exelmodule.writeExelStep.Writer_write;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -32,6 +36,46 @@ public class BatchConfig {
 
 
     @Bean
+    Job writeExel(Step writeExelStep) throws Exception{
+        return jobBuilderFactory.get("writeExel")
+                .incrementer(new RunIdIncrementer())
+                .flow(writeExelStep)
+                .end()
+                .build();
+    }
+    @Bean
+    public Step writeExelStep(Reader_write readerWrite, Processor_write processorWrite, Writer_write writerWrite) throws Exception{
+        return stepBuilderFactory.get("writeExelStep")
+                .<ExelWriteDto,String> chunk(1)
+                .reader(readerWrite)
+                .processor(processorWrite)
+                .writer(writerWrite)
+                .build();
+    }
+    @Bean
+    @StepScope
+    public Reader_write getDataToWrite(
+            @Value("#{jobParameters['test']}")String sourcePath,
+            @Value("#{jobParameters['sheet']}")Long sheet,
+            @Value("#{jobParameters['row']}")Long row,
+            @Value("#{jobParameters['cell_in_row']}")Long cell_in_row,
+            @Value("#{jobParameters['row_max']}")Long row_max,
+            @Value("#{jobParameters['cell_in_row_max']}")Long cell_in_row_max
+    )throws Exception
+    {
+        Reader_write readerWrite = new Reader_write();
+        Map<String,Object> exelParam = new LinkedHashMap<>();
+        exelParam.put("sheet",sheet);
+        exelParam.put("row",row);
+        exelParam.put("cell_in_row",cell_in_row);
+        exelParam.put("row_max",row_max);
+        exelParam.put("cell_in_row_max",cell_in_row_max);
+        readerWrite.setExelData(exelParam);
+        readerWrite.setSourcePath(sourcePath);
+        return readerWrite;
+    }
+
+    @Bean
     public Job readExel(Step readExelStep ) throws Exception
     {
         return jobBuilderFactory.get("readExel")
@@ -41,12 +85,11 @@ public class BatchConfig {
                 .build();
 
     }
-    //https://www.mkyong.com/java/apache-poi-reading-and-writing-excel-file-in-java/
     @Bean
     Step readExelStep(Reader reader, Processor processor, Writer writer)
     {
         return stepBuilderFactory.get("readExelStep")
-                .<ExelDto,List<Object>>chunk(1)
+                .<ExelReadDto,List<Object>>chunk(1)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -60,7 +103,9 @@ public class BatchConfig {
             @Value("#{jobParameters['test']}")String sourcePath,
             @Value("#{jobParameters['sheet']}")Long sheet,
             @Value("#{jobParameters['row']}")Long row,
-            @Value("#{jobParameters['cell_in_row']}")Long cell_in_row
+            @Value("#{jobParameters['cell_in_row']}")Long cell_in_row,
+            @Value("#{jobParameters['row_max']}")Long row_max,
+            @Value("#{jobParameters['cell_in_row_max']}")Long cell_in_row_max
     )throws Exception
     {
         Reader reader = new Reader();
@@ -68,6 +113,8 @@ public class BatchConfig {
         exelParam.put("sheet",sheet);
         exelParam.put("row",row);
         exelParam.put("cell_in_row",cell_in_row);
+        exelParam.put("row_max",row_max);
+        exelParam.put("cell_in_row_max",cell_in_row_max);
         reader.setExelParams(exelParam);
         reader.setSoucePath(sourcePath);
         return reader;

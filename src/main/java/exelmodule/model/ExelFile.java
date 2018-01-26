@@ -7,12 +7,23 @@ public class ExelFile {
     public String sheet;
     public Long row;
     public Long cell_in_row;
+    public Long row_max;
+    public Long cell_in_row_max;
 
     public ExelFile(String sourcePath, String sheet, Long row, Long cell_in_row) {
         this.sourcePath = sourcePath;
         this.sheet = sheet;
         this.row = row;
         this.cell_in_row = cell_in_row;
+    }
+
+    public ExelFile(String sourcePath, String sheet, Long row, Long cell_in_row, Long row_max, Long cell_in_row_max) {
+        this.sourcePath = sourcePath;
+        this.sheet = sheet;
+        this.row = row;
+        this.cell_in_row = cell_in_row;
+        this.row_max = row_max;
+        this.cell_in_row_max = cell_in_row_max;
     }
 
     public ExelFile() {
@@ -32,6 +43,22 @@ public class ExelFile {
 
     public void setSheet(String sheet) {
         this.sheet = sheet;
+    }
+
+    public Long getRow_max() {
+        return row_max;
+    }
+
+    public void setRow_max(Long row_max) {
+        this.row_max = row_max;
+    }
+
+    public Long getCell_in_row_max() {
+        return cell_in_row_max;
+    }
+
+    public void setCell_in_row_max(Long cell_in_row_max) {
+        this.cell_in_row_max = cell_in_row_max;
     }
 
     public Long getRow() {

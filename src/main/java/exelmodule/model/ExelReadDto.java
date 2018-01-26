@@ -5,11 +5,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.Map;
 
-public class ExelDto {
+public class ExelReadDto {
     public Workbook exelfile;
     public Map<String,Object> exelParams;
 
-    public ExelDto(Workbook exelfile, Map<String, Object> exelParams) {
+    public ExelReadDto(Workbook exelfile, Map<String, Object> exelParams) {
         this.exelfile = exelfile;
         this.exelParams = exelParams;
     }
