@@ -25,11 +25,6 @@ public class Controller {
     Job job;
 
 
-    @PostMapping("file/write")
-    public void write(@RequestBody ExelFile exelFile){
-
-    }
-
 
     @PostMapping("file/read")
     public void read(@RequestBody ExelFile exelFile) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
@@ -39,8 +34,6 @@ public class Controller {
                     .addString("sheet", exelFile.sheet)
                     .addLong("row", exelFile.row)
                     .addLong("cell_in_row", exelFile.cell_in_row)
-                    .addLong("row_max",exelFile.row_max)
-                    .addLong("cell_in_row_max",exelFile.cell_in_row_max)
                     .addLong("time", System.nanoTime())
                     .toJobParameters();
             jobLauncher.run(job, jobParameters);

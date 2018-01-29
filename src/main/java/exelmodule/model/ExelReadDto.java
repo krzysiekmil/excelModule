@@ -1,25 +1,24 @@
 package exelmodule.model;
 
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
 
 import java.util.Map;
 
 public class ExelReadDto {
-    public Workbook exelfile;
+    public Row row;
     public Map<String,Object> exelParams;
 
-    public ExelReadDto(Workbook exelfile, Map<String, Object> exelParams) {
-        this.exelfile = exelfile;
+    public ExelReadDto(Row row, Map<String, Object> exelParams) {
+        this.row = row;
         this.exelParams = exelParams;
     }
 
-    public Workbook getExelfile() {
-        return exelfile;
+    public Row getRow() {
+        return row;
     }
 
-    public void setExelfile(Workbook exelfile) {
-        this.exelfile = exelfile;
+    public void setRow(Row row) {
+        this.row = row;
     }
 
     public Map<String, Object> getExelParams() {
