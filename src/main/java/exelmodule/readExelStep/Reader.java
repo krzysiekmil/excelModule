@@ -1,50 +1,60 @@
 package exelmodule.readExelStep;
 
-import exelmodule.model.ExelReadDto;
-import org.apache.poi.ss.usermodel.Row;
+import exelmodule.model.ExcelReadDto;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.batch.item.ItemReader;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
-public class Reader implements ItemReader<ExelReadDto> {
+public class Reader implements ItemReader<ExcelReadDto> {
 
-    Map<String,Object> exelParams = new LinkedHashMap<>();
-    String soucePath;
-    Integer row;
-    Workbook workbook;
-    Sheet dataSheet;
+    private Map<String,Object> excelParams = new LinkedHashMap<>();
+    private String sourcePath;
+    private Integer row;
+    private Workbook workbook;
+    private Sheet dataSheet;
+    String data;
 
     @Override
-    public ExelReadDto read() throws IOException {
+    public ExcelReadDto read() throws IOException {
         if(row==null||dataSheet==null||workbook==null){
-            row=Integer.valueOf(exelParams.get("row").toString());
-            FileInputStream exelFile = new FileInputStream(soucePath);
-            workbook = new XSSFWorkbook(exelFile);
-            dataSheet = workbook.getSheetAt(Integer.valueOf(exelParams.get("sheet").toString()));
+            init();
         }
             if(row<=dataSheet.getLastRowNum())
             {
-                return new ExelReadDto(dataSheet.getRow(row++),exelParams);
+                return new ExcelReadDto(dataSheet.getRow(row++), excelParams);
             }
             else
             {
                 return null;
             }
     }
+    private void init() throws IOException {
 
-    public void setExelParams(Map<String, Object> exelParams) {
-        this.exelParams = exelParams;
+        FileInputStream excelFile = new FileInputStream(sourcePath);
+        workbook = new XSSFWorkbook(excelFile);
+        dataSheet = workbook.getSheetAt(Integer.valueOf(excelParams.get("sheet").toString()));
+        row=Integer.valueOf(excelParams.get("row").toString());
     }
 
-    public void setSoucePath(String soucePath) {
-        this.soucePath = soucePath;
+    public void setExcelParams(Map<String, Object> excelParams) {
+        this.excelParams = excelParams;
     }
+
+    public void setSourcePath(String sourcePath) {
+        this.sourcePath = sourcePath;
+    }
+
+
+
+
 }

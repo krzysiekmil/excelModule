@@ -1,6 +1,6 @@
 package exelmodule.config;
 
-import exelmodule.model.ExelReadDto;
+import exelmodule.model.ExcelReadDto;
 import exelmodule.readExelStep.Processor;
 import exelmodule.readExelStep.Reader;
 import exelmodule.readExelStep.Writer;
@@ -34,20 +34,20 @@ public class BatchConfig {
 //
 
     @Bean
-    public Job readExel(Step readExelStep ) throws Exception
+    public Job readExcel(Step readExcelStep ) throws Exception
     {
-        return jobBuilderFactory.get("readExel")
+        return jobBuilderFactory.get("readExcel")
                 .incrementer(new RunIdIncrementer())
-                .flow(readExelStep)
+                .flow(readExcelStep)
                 .end()
                 .build();
 
     }
     @Bean
-    Step readExelStep(Reader reader, Processor processor, Writer writer)
+    Step readExcelStep(Reader reader, Processor processor, Writer writer)
     {
-        return stepBuilderFactory.get("readExelStep")
-                .<ExelReadDto,List<Object>>chunk(1)
+        return stepBuilderFactory.get("readExcelStep")
+                .<ExcelReadDto,List<Object>>chunk(1)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -57,7 +57,7 @@ public class BatchConfig {
 
     @Bean
     @StepScope
-    public Reader getExelFileParams(
+    public Reader getExcelFileParams(
             @Value("#{jobParameters['test']}")String sourcePath,
             @Value("#{jobParameters['sheet']}")Long sheet,
             @Value("#{jobParameters['row']}")Long row,
@@ -65,12 +65,12 @@ public class BatchConfig {
     )throws Exception
     {
         Reader reader = new Reader();
-        Map<String,Object> exelParam = new LinkedHashMap<>();
-        exelParam.put("sheet",sheet);
-        exelParam.put("row",row);
-        exelParam.put("cell_in_row",cell_in_row);
-        reader.setExelParams(exelParam);
-        reader.setSoucePath(sourcePath);
+        Map<String,Object> excelParam = new LinkedHashMap<>();
+        excelParam.put("sheet",sheet);
+        excelParam.put("row",row);
+        excelParam.put("cell_in_row",cell_in_row);
+        reader.setExcelParams(excelParam);
+        reader.setSourcePath(sourcePath);
         return reader;
     }
 

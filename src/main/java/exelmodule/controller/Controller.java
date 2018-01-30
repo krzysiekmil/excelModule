@@ -1,6 +1,5 @@
 package exelmodule.controller;
 
-import com.sun.javaws.exceptions.ErrorCodeResponseException;
 import exelmodule.model.ExelFile;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
@@ -11,10 +10,9 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 public class Controller {
@@ -27,8 +25,8 @@ public class Controller {
 
 
     @PostMapping("file/read")
-    public void read(@RequestBody ExelFile exelFile) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        if (!exelFile.sourcePath.isEmpty()&&!exelFile.sheet.isEmpty()&&exelFile.row!=null&&exelFile.cell_in_row!=null) {
+    public void read(@RequestBody ExelFile exelFile) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, IOException {
+        if (!exelFile.sourcePath.isEmpty() && !exelFile.sheet.isEmpty() && exelFile.row != null && exelFile.cell_in_row != null) {
             JobParameters jobParameters = new JobParametersBuilder()
                     .addString("test", exelFile.sourcePath)
                     .addString("sheet", exelFile.sheet)
@@ -38,7 +36,6 @@ public class Controller {
                     .toJobParameters();
             jobLauncher.run(job, jobParameters);
         }
-        else
-            throw new JobParametersInvalidException("Missing parameters");
     }
+
 }
